@@ -6,5 +6,6 @@ INSERT INTO tbl_customer (customer_id,
                           address,
                           city,
                           state,
-                          zip_code)
-    VALUES (1, "Uma", "Kline", "1-753-492-2603", "tempor@nislelementumpurus.ca"
+                          zip_code) VALUES
+    (1, "Uma", "Kline", "1-753-492-2603", "tempor@nislelementumpurus.ca", "3092 Mus. Road", "Troy", "AL", "36082"),
+    
