@@ -25,7 +25,7 @@ INSERT INTO tbl_customer (customer_id, first_name, last_name, telephone, email, 
     (19, "Kiara",    "Shields",    "1-542-337-1106", "massa.Vestibulum@rutrumFusce.co.uk",        "6868 Integer St.",              "Atlanta",  "GA", "30303"),
     (20, "Leigh",    "Williams",   "1-917-657-0658", "blandit.at@anequeNullam.co.uk",             "310-184 Mi Av.",                "Atlanta",  "GA", "30303");
 
-INSERT INTO tbl_vehible (vehicle_id, VIN, year, make, model, mileage) VALUES
+INSERT INTO tbl_vehicle (vehicle_id, VIN, year, make, model, mileage) VALUES
     (1,  "ABCDJS123KDJR894H",  "2003", "honda",      "accord",    120385),
     (2,  "AKS92H3NRKW91HW",    "1992", "honda",      "civic",     162978),
     (3,  "103JD8SOQPWM103",    "1986", "honda",      "crv",       79445),
