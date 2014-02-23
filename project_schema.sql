@@ -18,7 +18,7 @@ CREATE TABLE tbl_customer (
 CREATE TABLE tbl_vehicle (
     vehicle_id    INTEGER   PRIMARY KEY   AUTOINCREMENT,
     VIN           TEXT,
-    year          YEAR(4)   NOT NULL,
+    year          TEXT      NOT NULL,
     make          TEXT      NOT NULL,
     model         TEXT      NOT NULL,
     mileage       INTEGER   NOT NULL
@@ -26,8 +26,8 @@ CREATE TABLE tbl_vehicle (
 
 CREATE TABLE tbl_order (
     order_id      INTEGER   PRIMARY KEY   AUTOINCREMENT,
-    start_time    DATETIME  NOT NULL,
-    end_time      DATETIME  NOT NULL
+    start_time    TEXT      NOT NULL,
+    end_time      TEXT      NOT NULL
 );
 
 CREATE TABLE tbl_service (
