@@ -4,59 +4,66 @@
 -- 25 March 2014
 
 CREATE TABLE tbl_customer (
-    customer_id   INT(11)       PRIMARY KEY   AUTOINCREMENT,
-    first_name    VARCHAR(45)   NOT NULL,
-    last_name     VARCHAR(45)   NOT NULL,
-    telephone     VARCHAR(45)   NOT NULL,
-    email         VARCHAR(45),
-    address       VARCHAR(255),
-    city          VARCHAR(45),
-    state         VARCHAR(45),
-    zip_code      VARCHAR(45)
+    customer_id   INTEGER   PRIMARY KEY   AUTOINCREMENT,
+    first_name    TEXT      NOT NULL,
+    last_name     TEXT      NOT NULL,
+    telephone     TEXT      NOT NULL,
+    email         TEXT,
+    address       TEXT,
+    city          TEXT,
+    state         TEXT,
+    zip_code      TEXT
 );
 
 CREATE TABLE tbl_vehicle (
-    vehicle_id    INT(11)       PRIMARY KEY   AUTOINCREMENT,
-    VIN           VARCHAR(45),
-    year          YEAR(4)       NOT NULL,
-    make          VARCHAR(45)   NOT NULL,
-    model         VARCHAR(45)   NOT NULL,
-    mileage       INT(11)       NOT NULL
+    vehicle_id    INTEGER   PRIMARY KEY   AUTOINCREMENT,
+    VIN           TEXT,
+    year          YEAR(4)   NOT NULL,
+    make          TEXT      NOT NULL,
+    model         TEXT      NOT NULL,
+    mileage       INTEGER   NOT NULL
 );
 
 CREATE TABLE tbl_order (
-    order_id      INT(11)   PRIMARY KEY   AUTOINCREMENT,
-    start_time    DATETIME,
-    end_time      DATETIME
+    order_id      INTEGER   PRIMARY KEY   AUTOINCREMENT,
+    start_time    DATETIME  NOT NULL,
+    end_time      DATETIME  NOT NULL
 );
 
 CREATE TABLE tbl_service (
-    service_id    INT(11)       PRIMARY KEY   AUTOINCREMENT,
-    name          VARCHAR(255)  NOT NULL,
-    labor_hour    DOUBLE        NOT NULL,
-    part_cost     DOUBLE        NOT NULL,
-    rate_id       INT(11)       FOREIGN KEY   NOT NULL
+    service_id           INTEGER    PRIMARY KEY   AUTOINCREMENT,
+    name                 TEXT       NOT NULL,
+    labor_hour           REAL       NOT NULL,
+    part_cost            REAL       NOT NULL,
+    rate_id              INTEGER    NOT NULL,
+    FOREIGN KEY(rate_id) REFERENCES tbl_rate(rate_id)
 );
 
 CREATE TABLE tbl_rate (
-    rate_id               INT(11)   PRIMARY KEY   AUTOINCREMENT,
-    labor_cost_per_hour   DOUBLE    NOT NULL
+    rate_id               INTEGER   PRIMARY KEY   AUTOINCREMENT,
+    labor_cost_per_hour   REAL      NOT NULL
 );
 
 CREATE TABLE tbl_customer_vehicle (
-    customer_vehicle_id   INT(11)   PRIMARY KEY   AUTOINCREMENT,
-    customer_id           INT(11)   FOREIGN KEY   NOT NULL,
-    vehicle_id            INT(11)   FOREIGN KEY   NOT NULL
+    customer_vehicle_id      INTEGER   PRIMARY KEY   AUTOINCREMENT,
+    customer_id              INTEGER   NOT NULL,
+    vehicle_id               INTEGER   NOT NULL,
+    FOREIGN KEY(customer_id) REFERENCES tbl_customer(customer_id),
+    FOREIGN KEY(vehicle_id)  REFERENCES tbl_vehicle(vehicle_id)
 );
 
 CREATE TABLE tbl_vehicle_order (
-    vehicle_order_id      INT(11)   PRIMARY KEY   AUTOINCREMENT,
-    vehicle_id            INT(11)   FOREIGN KEY   NOT NULL,
-    order_id              INT(11)   FOREIGN KEY   NOT NULL
+    vehicle_order_id        INTEGER    PRIMARY KEY   AUTOINCREMENT,
+    vehicle_id              INTEGER    NOT NULL,
+    order_id                INTEGER    NOT NULL,
+    FOREIGN KEY(vehicle_id) REFERENCES tbl_vehicle(vehicle_id),
+    FOREIGN KEY(order_id)   REFERENCES tbl_order(order_id)
 );
 
 CREATE TABLE tbl_order_service (
-    order_service_id      INT(11)   PRIMARY KEY   AUTOINCREMENT,
-    order_id              INT(11)   FOREIGN KEY   NOT NULL,
-    service_id            INT(11)   FOREIGN KEY   NOT NULL
+    order_service_id        INTEGER    PRIMARY KEY   AUTOINCREMENT,
+    order_id                INTEGER    NOT NULL,
+    service_id              INTEGER    NOT NULL,
+    FOREIGN KEY(order_id)   REFERENCES tbl_order(order_id),
+    FOREIGN KEY(service_id) REFERENCES tbl_service(service_id)
 );
