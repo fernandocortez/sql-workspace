@@ -284,4 +284,4 @@ INSERT INTO tbl_order_service (order_service_id, order_id, service_id) VALUES
     (61, 40, 3),
     (62, 41, 8),
     (63, 41, 3),
-    (64, 42, 10),
+    (64, 42, 10);
