@@ -3,10 +3,6 @@
 -- Database Project
 -- 25 March 2014
 
-/* How to export schema to database
- * sqlite3 project.db < project_schema.sql
- */
-
 CREATE TABLE tbl_customer (
     customer_id   INTEGER   PRIMARY KEY   AUTOINCREMENT,
     first_name    TEXT      NOT NULL,
