@@ -1,4 +1,5 @@
-SELECT customer_id FROM tbl_customer_vehicle GROUP BY customer_id HAVING count(vehicle_id) > 2;
+SELECT customer_id FROM tbl_customer_vehicle GROUP BY customer_id
+HAVING count(vehicle_id) > 2;
 customer_id
 -----------
 1          
@@ -6,7 +7,8 @@ customer_id
 17         
 20         
 
-SELECT order_id, count(service_id) AS service_count FROM tbl_order_service GROUP BY order_id;
+SELECT order_id, count(service_id) AS service_count FROM tbl_order_service
+GROUP BY order_id;
 order_id    service_count
 ----------  -------------
 1           1            
@@ -52,7 +54,10 @@ order_id    service_count
 41          2            
 42          1            
 
-SELECT first_name, last_name FROM tbl_customer JOIN (SELECT customer_id, count(vehicle_id) AS vehicle_count FROM tbl_customer_vehicle GROUP BY customer_id HAVING vehicle_count > 2) USING (customer_id);
+SELECT first_name, last_name FROM tbl_customer JOIN
+    (SELECT customer_id, count(vehicle_id) AS vehicle_count FROM
+    tbl_customer_vehicle GROUP BY customer_id HAVING vehicle_count > 2)
+USING (customer_id);
 first_name  last_name 
 ----------  ----------
 Uma         Kline     
@@ -60,8 +65,12 @@ Quyn        Solomon
 Melyssa     Massey    
 Leigh       Williams  
 
-SELECT order_id, sum(labor_hour*labor_cost_per_hour+part_cost) AS total_cost, year, make, model, mileage FROM tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate NATURAL JOIN tbl_vehicle_order NATURAL JOIN tbl_vehicle GROUP BY order_id HAVING total_cost > 550 ORDER BY order_id;
-order_id    total_cost  year        make        model       mileage   
+SELECT order_id, order_cost, year, make, model, mileage FROM
+    (SELECT order_id, sum(labor_hour*labor_cost_per_hour+part_cost) AS
+    order_cost FROM tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN
+    tbl_rate GROUP BY order_id HAVING order_cost > 550)
+NATURAL JOIN tbl_vehicle_order NATURAL JOIN tbl_vehicle ORDER BY order_id;
+order_id    order_cost  year        make        model       mileage   
 ----------  ----------  ----------  ----------  ----------  ----------
 5           755.0       1986        honda       crv         79445     
 10          599.0       1997        ford        fusion      142807    
@@ -72,7 +81,9 @@ order_id    total_cost  year        make        model       mileage
 32          599.0       1991        nissan      cube        83647     
 36          1008.5      1992        volvo       xc90        4235      
 
-SELECT service_id, name, labor_hour*labor_cost_per_hour+part_cost AS service_cost FROM tbl_service JOIN tbl_rate USING (rate_id) WHERE service_cost > 500;
+SELECT service_id, name, labor_hour*labor_cost_per_hour+part_cost AS
+service_cost FROM tbl_service JOIN tbl_rate USING (rate_id)
+WHERE service_cost > 500;
 service_id  name           service_cost
 ----------  -------------  ------------
 12          engine repair  925.0       
@@ -80,31 +91,42 @@ service_id  name           service_cost
 16          engine tune u  599.0       
 24          severe body d  510.0       
 
-SELECT customer_id, first_name, last_name, sum(labor_hour*labor_cost_per_hour+part_cost) AS total_cost FROM tbl_customer NATURAL JOIN tbl_customer_vehicle NATURAL JOIN tbl_vehicle_order NATURAL JOIN tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate GROUP BY customer_id ORDER BY last_name, first_name;
-customer_id  first_name  last_name   total_cost
------------  ----------  ----------  ----------
-18           Yvette      Bartlett    629.0     
-4            Aspen       Beach       308.0     
-5            Aladdin     Benton      599.0     
-11           Chadwick    Bradley     90.0      
-3            Audra       Green       49.99     
-7            Anjolie     Heath       19.99     
-15           Hedy        Horton      969.5     
-14           Ora         Huber       925.0     
-1            Uma         Kline       1237.5    
-17           Melyssa     Massey      118.98    
-13           Scarlet     Mcdowell    30.0      
-12           Yoko        Medina      755.0     
-6            Brittany    Montgomery  98.5      
-8            Hyatt       Park        510.0     
-2            Madeson     Peck        165.0     
-16           Orla        Pitts       195.0     
-19           Kiara       Shields     47.5      
-10           Quyn        Solomon     1297.5    
-9            Lila        Wilder      138.0     
-20           Leigh       Williams    1387.49   
+SELECT customer_id, first_name, last_name, total_expense FROM
+    (SELECT customer_id, sum(vehicle_cost) AS total_expense FROM
+        (SELECT vehicle_id, sum(order_cost) AS vehicle_cost FROM
+            (SELECT order_id, sum(labor_hour*labor_cost_per_hour+part_cost)
+            AS order_cost FROM tbl_order_service NATURAL JOIN tbl_service
+            NATURAL JOIN tbl_rate GROUP BY order_id)
+        NATURAL JOIN tbl_vehicle_order GROUP BY vehicle_id)
+    NATURAL JOIN tbl_customer_vehicle GROUP BY customer_id)
+NATURAL JOIN tbl_customer ORDER BY last_name, first_name;
+customer_id  first_name  last_name   total_expense
+-----------  ----------  ----------  -------------
+18           Yvette      Bartlett    629.0        
+4            Aspen       Beach       308.0        
+5            Aladdin     Benton      599.0        
+11           Chadwick    Bradley     90.0         
+3            Audra       Green       49.99        
+7            Anjolie     Heath       19.99        
+15           Hedy        Horton      969.5        
+14           Ora         Huber       925.0        
+1            Uma         Kline       1237.5       
+17           Melyssa     Massey      118.98       
+13           Scarlet     Mcdowell    30.0         
+12           Yoko        Medina      755.0        
+6            Brittany    Montgomery  98.5         
+8            Hyatt       Park        510.0        
+2            Madeson     Peck        165.0        
+16           Orla        Pitts       195.0        
+19           Kiara       Shields     47.5         
+10           Quyn        Solomon     1297.5       
+9            Lila        Wilder      138.0        
+20           Leigh       Williams    1387.49      
 
-SELECT service_id, name, count(service_id) AS service_count, sum(labor_hour*labor_cost_per_hour+part_cost) AS service_income FROM tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate GROUP BY service_id ORDER BY service_id;
+SELECT service_id, name, count(service_id) AS service_count,
+sum(labor_hour*labor_cost_per_hour+part_cost) AS service_income FROM
+tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate GROUP BY
+service_id ORDER BY service_id;
 service_id  name        service_count  service_income
 ----------  ----------  -------------  --------------
 1           oil change  12             360.0         
@@ -130,54 +152,50 @@ service_id  name        service_count  service_income
 24          severe bod  1              510.0         
 25          emission t  5              99.95         
 
-SELECT first_name, last_name, customer_id, sum(labor_hour*labor_cost_per_hour+part_cost) AS total_cost FROM tbl_customer NATURAL JOIN tbl_customer_vehicle NATURAL JOIN tbl_vehicle_order NATURAL JOIN tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate GROUP BY customer_id;
-first_name  last_name   customer_id  total_cost
-----------  ----------  -----------  ----------
-Uma         Kline       1            1237.5    
-Madeson     Peck        2            165.0     
-Audra       Green       3            49.99     
-Aspen       Beach       4            308.0     
-Aladdin     Benton      5            599.0     
-Brittany    Montgomery  6            98.5      
-Anjolie     Heath       7            19.99     
-Hyatt       Park        8            510.0     
-Lila        Wilder      9            138.0     
-Quyn        Solomon     10           1297.5    
-Chadwick    Bradley     11           90.0      
-Yoko        Medina      12           755.0     
-Scarlet     Mcdowell    13           30.0      
-Ora         Huber       14           925.0     
-Hedy        Horton      15           969.5     
-Orla        Pitts       16           195.0     
-Melyssa     Massey      17           118.98    
-Yvette      Bartlett    18           629.0     
-Kiara       Shields     19           47.5      
-Leigh       Williams    20           1387.49   
+SELECT first_name, last_name, customer_id, max(customer_expense) AS
+total_expense FROM
+    (SELECT customer_id, sum(vehicle_cost) AS customer_expense FROM
+        (SELECT vehicle_id, sum(order_cost) AS vehicle_cost FROM
+            (SELECT order_id, sum(labor_hour*labor_cost_per_hour+part_cost)
+            AS order_cost FROM tbl_order_service NATURAL JOIN tbl_service
+            NATURAL JOIN tbl_rate GROUP BY order_id)
+        NATURAL JOIN tbl_vehicle_order GROUP BY vehicle_id)
+    NATURAL JOIN tbl_customer_vehicle GROUP BY customer_id)
+NATURAL JOIN tbl_customer ORDER BY last_name, first_name;
+first_name  last_name   customer_id  total_expense
+----------  ----------  -----------  -------------
+Leigh       Williams    20           1387.49      
 
-SELECT vehicle_id, year, make, model, mileage, count(order_id) AS order_count, sum(labor_hour*labor_cost_per_hour+part_cost) AS vehicle_cost FROM tbl_vehicle_order NATURAL JOIN tbl_vehicle NATURAL JOIN tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate GROUP BY vehicle_id;
+SELECT vehicle_id, year, make, model, mileage, count(order_id) AS
+order_count, sum(order_cost) AS vehicle_cost FROM
+    (SELECT order_id, sum(labor_hour*labor_cost_per_hour+part_cost)
+    AS order_cost FROM tbl_order_service NATURAL JOIN tbl_service
+    NATURAL JOIN tbl_rate GROUP BY order_id)
+NATURAL JOIN tbl_vehicle_order NATURAL JOIN tbl_vehicle GROUP BY vehicle_id
+ORDER BY vehicle_id;
 vehicle_id  year        make        model       mileage     order_count  vehicle_cost
 ----------  ----------  ----------  ----------  ----------  -----------  ------------
 1           2003        honda       accord      120385      1            30.0        
 2           1992        honda       civic       162978      2            60.0        
 3           1986        honda       crv         79445       2            785.0       
-4           2008        ford        focus       98647       5            362.5       
+4           2008        ford        focus       98647       1            362.5       
 5           1998        ford        focus       191162      1            165.0       
-6           2006        ford        escape      171553      2            49.99       
-7           2005        ford        escape      125803      4            308.0       
+6           2006        ford        escape      171553      1            49.99       
+7           2005        ford        escape      125803      1            308.0       
 8           1997        ford        fusion      142807      1            599.0       
 9           2000        toyota      camry       146976      1            98.5        
 10          2006        toyota      camry       194943      1            19.99       
 11          2011        toyota      rav-4       85159       1            510.0       
-12          1998        toyota      corolla     75659       4            138.0       
+12          1998        toyota      corolla     75659       2            138.0       
 13          2005        toyota      corolla     44870       2            885.0       
 14          2001        toyota      4runner     61495       1            67.5        
-15          1997        vw          jetta       107870      3            345.0       
+15          1997        vw          jetta       107870      1            345.0       
 16          1993        vw          jetta       80989       2            60.0        
 17          2006        vw          jetta       150142      1            30.0        
 18          1993        vw          golf        126333      1            755.0       
 19          1992        vw          golf        67367       1            30.0        
 20          1987        vw          golf        168569      1            925.0       
-21          2008        nissan      altima      51211       4            969.5       
+21          2008        nissan      altima      51211       1            969.5       
 22          2012        nissan      altima      181628      1            30.0        
 23          2001        nissan      maxima      166063      1            165.0       
 24          2014        nissan      versa       168881      1            19.99       
@@ -185,15 +203,16 @@ vehicle_id  year        make        model       mileage     order_count  vehicle
 26          1993        nissan      sentra      148489      1            79.0        
 27          1991        nissan      cube        83647       2            629.0       
 28          1989        nissan      altima      15352       1            47.5        
-29          1992        volvo       xc90        4235        8            1028.49     
+29          1992        volvo       xc90        4235        2            1028.49     
 30          2012        volvo       xc60        82366       1            10.0        
 31          1993        mitsubishi  eclipse     61601       1            30.0        
 32          2007        mitsubishi  endeavor    1273        1            30.0        
 33          2003        mitsubishi  endeavor    12010       1            30.0        
-34          2004        mitsubishi  endeavor    199848      2            109.0       
+34          2004        mitsubishi  endeavor    199848      1            109.0       
 35          2011        mitsubishi  outlander   26314       1            150.0       
 
-SELECT total(labor_hour*labor_cost_per_hour+part_cost) AS total_income FROM tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate;
+SELECT total(labor_hour*labor_cost_per_hour+part_cost) AS total_income FROM
+tbl_order_service NATURAL JOIN tbl_service NATURAL JOIN tbl_rate;
 total_income
 ------------
 9570.95     
