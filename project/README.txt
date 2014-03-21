@@ -3,7 +3,7 @@ database using the companion SQL scripts with SQLite. In order to populate
 the database with the data script (step 2), SQLite 3.7.11 and above must be
 used in order to utilize the simpler syntax found in the file. The
 instructions should work with most systems, but the instructions were tested
-using Linux Debian 7.
+using Linux Debian 7 with sqlite 3.7.13
 
 
 1. Exporting schema to database
